@@ -1,10 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from news.models import News
+from news.models import News,TemporaryLink
 from news.serializers import NewsSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import ListAPIView
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+import uuid
+
 
 # Classe de paginação personalizada
 class StandardResultsSetPagination(PageNumberPagination):
@@ -44,3 +48,14 @@ class NewsAPIView(ListAPIView):  # Alteramos a classe base para ListAPIView
 
         news_article.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class GenerateTemporaryLink(APIView):
+    def post(self, request, pk):
+        news = get_object_or_404(News, pk=pk)
+        expiration_time = timezone.now() + timezone.timedelta(hours=1)
+        token = uuid.uuid4()
+        TemporaryLink.objects.create(news=news, token=token, expiration_time=expiration_time)
+        link = f"/api/link/{token}"
+        return Response({"temporary_link": link}, status=status.HTTP_201_CREATED)
