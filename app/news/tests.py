@@ -47,14 +47,16 @@ class NewsAPIViewTestCase(APITestCase):
         expected_data = NewsSerializer(News.objects.get(pk=self.news.id)).data
         self.assertEqual(response.data, expected_data)
 
-    def test_create_news(self):
-        new_news_data = {
-            'title': 'New Test News Article',
-            'content': 'This is a new test news article.',
-            'author': 'Jane Smith',
-        }
-        response = self.client.post(self.url, new_news_data, format='json')
-  
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        expected_data = NewsSerializer(News.objects.get(pk=response.data['id'])).data
-        self.assertEqual(response.data, expected_data)
+def test_create_news(self):
+    new_news_data = {
+        'title': 'New Test News Article',
+        'content': 'This is a new test news article.',
+        'author': 'Jane Smith',
+        'pub_date': '2023-10-21',  # Use o formato YYYY-MM-DD para a data.
+        'category': 'politics'  # Defina a categoria desejada.
+    }
+    response = self.client.post(self.url, new_news_data, format='json')
+
+    self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    expected_data = NewsSerializer(News.objects.get(pk=response.data['id'])).data
+    self.assertEqual(response.data, expected_data)

@@ -4,7 +4,7 @@ from rest_framework import status
 from news.models import News
 from news.serializers import NewsSerializer
 
-
+    
 class NewsAPIView(APIView):
     permission_classes = []
     authentication_classes = []
